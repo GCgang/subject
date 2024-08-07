@@ -7,8 +7,19 @@ import { MdEmail } from 'react-icons/md';
 import { useFormState } from 'react-dom';
 import { logIn } from './action';
 
+interface FormState {
+  success?: boolean;
+  message?: string;
+  fieldErrors?: {
+    email?: string[];
+    username?: string[];
+    password?: string[];
+  };
+}
+
 export default function Home() {
-  const [state, action] = useFormState(logIn, null);
+  const [state, action] = useFormState<FormState>(logIn, null);
+  console.log(state);
   return (
     <div className='flex flex-col justify-center items-center mt-20'>
       <div>
@@ -21,6 +32,7 @@ export default function Home() {
           placeholder='Email'
           required
           icon={<MdEmail />}
+          errors={state?.fieldErrors?.email || []}
         />
         <Input
           name='username'
@@ -28,20 +40,21 @@ export default function Home() {
           placeholder='Username'
           required
           icon={<FaUser />}
+          errors={state?.fieldErrors?.username || []}
         />
         <Input
           name='password'
           type='password'
           placeholder='Password'
           required
-          error={state?.error?.password}
           icon={<FaKey />}
+          errors={state?.fieldErrors?.password || []}
         />
         <Button text='Log in' />
         {state?.success && (
           <div className='flex items-center bg-teal-400 rounded-3xl p-4'>
             <FaCheckCircle />
-            <span className='ml-2'>{state?.message}</span>
+            <span className='ml-2'>{state.message}</span>
           </div>
         )}
       </form>
